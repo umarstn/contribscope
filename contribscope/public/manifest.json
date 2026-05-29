@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "ContribScope",
+  "version": "1.0.0",
+  "description": "Find your next OSS contribution in 10 seconds.",
+  "permissions": [
+    "storage",
+    "identity",
+    "notifications",
+    "alarms",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://api.github.com/*",
+    "https://registry.npmjs.org/*"
+  ],
+  "background": {
+    "service_worker": "background/index.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*/*"],
+      "js": ["content/index.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_page": "options.html",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
