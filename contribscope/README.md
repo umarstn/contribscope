@@ -1,73 +1,41 @@
-# React + TypeScript + Vite
+# ContribScope
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Find your next Open Source contribution in 10 seconds.
 
-Currently, two official plugins are available:
+ContribScope is a Chromium extension that helps developers find relevant GitHub issues based on their technical skills, experience level, and contribution history.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- **Match Score**: Get a personalized score (0-100) for every repository you visit on GitHub.
+- **Recommended Issues**: See a curated list of open issues sorted by relevance and difficulty.
+- **Stack Analysis**: Compare your primary languages and technologies with any repository.
+- **Impact Tracking**: Track your total merged PRs, contribution streaks, and the impact (npm downloads) of your work.
+- **Streak Reminders**: Receive notifications when your contribution streak is at risk.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Installation
 
-## Expanding the ESLint configuration
+1. Clone this repository.
+2. Run `npm install` and `npm run build`.
+3. Open Chrome and go to `chrome://extensions`.
+4. Enable **Developer mode** (top right).
+5. Click **Load unpacked** and select the `dist` folder in the project directory.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Configuration
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1. Click the ContribScope icon in your browser toolbar.
+2. Go to **Settings** (or right-click the extension and select Options).
+3. Paste a **GitHub Personal Access Token (PAT)**. 
+   - Required scopes: `read:user`, `repo`, `public_repo`.
+4. Save the token and start exploring GitHub!
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Tech Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Vite 5 + React 18 + TypeScript**
+- **Zustand**: State management
+- **Tailwind CSS**: Styling
+- **GitHub GraphQL & REST APIs**
+- **Vitest**: Unit testing
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## License
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+MIT
