@@ -6,7 +6,8 @@ export async function storeToken(token: string): Promise<void> {
 
 export async function getToken(): Promise<string | null> {
   const result = await chrome.storage.local.get(CACHE_KEYS.token());
-  return result[CACHE_KEYS.token()] || null;
+  const token = result[CACHE_KEYS.token()];
+  return typeof token === "string" ? token : null;
 }
 
 export async function removeToken(): Promise<void> {

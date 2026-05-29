@@ -2,7 +2,7 @@ import { CacheEntry } from "../../shared/types";
 
 export async function getCached<T>(key: string): Promise<T | null> {
   const result = await chrome.storage.local.get(key);
-  const entry: CacheEntry<T> | undefined = result[key];
+  const entry = result[key] as CacheEntry<T> | undefined;
   if (!entry) return null;
   
   if (Date.now() - entry.fetchedAt > entry.ttlMs) {
