@@ -2,10 +2,22 @@ import { getUserProfile } from "./engine/profile-analyzer";
 import { analyzeRepo } from "./engine/repo-analyzer";
 import { scoreIssue } from "./engine/issue-matcher";
 import { calculateMatchScore } from "./engine/score-calculator";
+import { calculateImpact } from "./engine/impact-tracker";
 import { getCached, setCached } from "./cache/storage";
 import { CACHE_KEYS, TTL } from "../shared/constants";
-import { ExtMessage, ExtResponse, RepoProfile, ScoredIssue } from "../shared/types";
+import { ExtMessage, ExtResponse, RepoProfile, ScoredIssue, ImpactData } from "../shared/types";
 import { getIssues } from "./api/github-rest";
+
+// Initialize alarms
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.alarms.create("STREAK_CHECK", { periodInMinutes: 60 * 6 }); // Check every 6 hours
+});
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === "STREAK_CHECK") {
+    checkStreak();
+  }
+});
 
 chrome.runtime.onMessage.addListener((message: ExtMessage, _sender, sendResponse) => {
   switch (message.type) {
@@ -18,12 +30,46 @@ chrome.runtime.onMessage.addListener((message: ExtMessage, _sender, sendResponse
     case "GET_ISSUES":
       handleGetIssues(message.repoFullName, sendResponse);
       break;
+    case "GET_IMPACT":
+      handleGetImpact(sendResponse);
+      break;
     case "OPEN_POPUP":
       chrome.action.openPopup?.();
       break;
   }
   return true; // Keep channel open
 });
+
+async function checkStreak() {
+  try {
+    const impact = await calculateImpact();
+    if (impact.streakAtRisk) {
+      chrome.notifications.create("streak-warning", {
+        type: "basic",
+        iconUrl: "/icons/icon128.png",
+        title: "🔥 Streak at Risk!",
+        message: "You haven't contributed today yet. Keep your streak alive!",
+        priority: 2
+      });
+    }
+  } catch (error) {
+    console.error("Streak check failed:", error);
+  }
+}
+
+async function handleGetImpact(sendResponse: (response: ExtResponse<ImpactData>) => void) {
+  try {
+    const cacheKey = CACHE_KEYS.impact();
+    const cachedImpact = await getCached<ImpactData>(cacheKey);
+    if (cachedImpact) return sendResponse({ success: true, data: cachedImpact });
+
+    const impact = await calculateImpact();
+    await setCached(cacheKey, impact, TTL.IMPACT);
+    sendResponse({ success: true, data: impact });
+  } catch (error: any) {
+    sendResponse({ success: false, error: error.message });
+  }
+}
 
 async function handleGetUserProfile(sendResponse: (response: ExtResponse<any>) => void) {
   try {
