@@ -3,6 +3,7 @@ import { useContribStore } from "./store/use-contrib-store";
 import { MatchScore } from "./components/MatchScore";
 import { IssuesTab } from "./pages/IssuesTab";
 import { StackTab } from "./pages/StackTab";
+import { ImpactTab } from "./pages/ImpactTab";
 import { clsx } from "clsx";
 
 const App: React.FC = () => {
@@ -84,11 +85,7 @@ const App: React.FC = () => {
             {/* Tab Content */}
             {activeTab === "issues" && <IssuesTab />}
             {activeTab === "stack" && <StackTab />}
-            {activeTab === "impact" && (
-              <div className="p-8 text-center text-gray-500 text-sm">
-                Coming soon! Track your contributions and streak.
-              </div>
-            )}
+            {activeTab === "impact" && <ImpactTab />}
           </div>
         ) : (
           <div className="p-12 flex flex-col items-center justify-center text-center space-y-4">
